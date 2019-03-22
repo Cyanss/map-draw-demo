@@ -1,0 +1,23 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /frame
+
+jdbc:
+  driver: com.mysql.jdbc.Driver
+  url: jdbc:mysql://127.0.0.1:3306/frame?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  username: root
+  password: 2314
+
+mybatis:
+  configPath: mybatis-config.xml
+  mapperPath: /mapper/**.xml
+  entityPackage: com.bluethink.entity
+
+image: #文件上传配置
+  location:  #配置默认文件保存位置
+    windows: D:\Cyan\Places\ImagePlaces\
+spring:
+  aop:
+    proxy-target-class: true
+    auto: true

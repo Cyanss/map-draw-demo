@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluethink.dao.GraphInfoDAO">
+    <select id="queryGraphInfo" resultType="com.bluethink.vo.GraphVO">
+        select graph_id, user_id, graph_name, graph_type, graph_color, graph_content, graph_data
+        from graph_info
+    </select>
+    <select id="queryGraphInfoById" resultType="com.bluethink.vo.GraphVO">
+        select graph_id, user_id, graph_name, graph_type, graph_color, graph_content, graph_data
+        from graph_info where graph_id = #{graphId}
+    </select>
+    <select id="queryGraphInfoByName" resultType="com.bluethink.vo.GraphVO">
+        select graph_id, user_id, graph_name, graph_type, graph_color, graph_content, graph_data
+        from graph_info where graph_name = #{graphName}
+    </select>
+    <select id="queryGraphInfoByUserId" resultType="com.bluethink.entity.GraphInfo">
+        select graph_id, user_id, graph_name, graph_type, graph_color, graph_content, graph_data
+        from graph_info where user_id = #{userId}
+    </select>
+    <insert id="insertGraphInfo" useGeneratedKeys="true" keyProperty="graphId" keyColumn="graph_id" parameterType="com.bluethink.dto.GraphDTO">
+        insert into graph_info(user_id, graph_name, graph_type, graph_color, graph_content, graph_data)
+        values (#{userId}, #{graphName}, #{graphType}, #{graphColor}, #{graphContent}, #{graphData})
+    </insert>
+    <update id="updateGraphInfo" parameterType="com.bluethink.dto.GraphDTO">
+        update graph_info
+        <set>
+            <if test="graphDTO.userId!=null">user_id=#{graphDTO.userId},</if>
+            <if test="graphDTO.graphName!=null">graph_name=#{graphDTO.graphName},</if>
+            <if test="graphDTO.graphType!=null">graph_type=#{graphDTO.graphType},</if>
+            <if test="graphDTO.graphColor!=null">graph_color=#{graphDTO.graphColor},</if>
+            <if test="graphDTO.graphContent!=null">graph_content=#{graphDTO.graphContent},</if>
+            <if test="graphDTO.graphData!=null">graph_data=#{graphDTO.graphData},</if>
+        </set>
+        where graph_id = #{graphId}
+    </update>
+    <delete id="deleteGraphInfo">
+        delete from graph_info where graph_id = #{graphId}
+    </delete>
+</mapper>
