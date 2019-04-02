@@ -113,12 +113,10 @@ public class Polygon extends Graph {
 		}
 		Color oldColor= c.getColor();
 		c.setColor(randomColor);
-		/* 绘制多边形边线 */
 		for (int i = 0; i < pointList.size() - 1; i++) {
 			c.drawLine((int)pointList.get(i).getX(), (int)pointList.get(i).getY(), (int)pointList.get(i+1).getX(), (int)pointList.get(i+1).getY());
 		}
 		c.drawLine((int)getLast().getX(), (int)getLast().getY(), (int)getFirst().getX(), (int)getFirst().getY());
-		/* 填充多边形 */
 		
 		c.fillPolygon(xPoints, yPoints,pointList.size());
 		c.setColor(oldColor);
@@ -146,21 +144,33 @@ public class Polygon extends Graph {
 	}
 
 	@Override
-	public int hitTest(Point pt) {
-		for (int i = 0; i < pointList.size() - 1; i++) {
-			if( Math.abs(pt.getX()-pointList.get(i).getX()) <= SEL_TOLERANCE && Math.abs(pt.getY()-pointList.get(i).getY()) <= SEL_TOLERANCE ){
+	public int hitTest(Point point) {
+		boolean flag = false;
+		for (int i = 0, length = pointList.size(), j = length - 1; i < length; j = i, i++) {
+			double startX = pointList.get(i).getX(),
+				   startY = pointList.get(i).getY(),
+				   endX = pointList.get(j).getX(),
+				   endY = pointList.get(j).getY();
+			
+			if( Math.abs(point.getX()-startX) <= SEL_TOLERANCE && Math.abs(point.getY()-startY) <= SEL_TOLERANCE ){
 				return i;
-			} else if ( pt.getX() >= (pointList.get(i).getX() > pointList.get(i+1).getX() ? pointList.get(i+1).getX() : pointList.get(i).getX()) &&
-				      pt.getX() <= (pointList.get(i).getX() < pointList.get(i+1).getX() ? pointList.get(i+1).getX() : pointList.get(i).getX()) &&
-					  pt.getY() >= (pointList.get(i).getY() > pointList.get(i+1).getY() ? pointList.get(i+1).getY() : pointList.get(i).getY()) &&
-				      pt.getY() <= (pointList.get(i).getY() < pointList.get(i+1).getY() ? pointList.get(i+1).getY() : pointList.get(i).getY()) ){
-				return -1;
-			}				
+			}
+			if( Math.abs(point.getX()-endX) <= SEL_TOLERANCE && Math.abs(point.getY()-endY) <= SEL_TOLERANCE ){
+				return j;
+			}
+			
+			if ((startY < point.getY() && endY >= point.getY()) || (startY >= point.getY() && endY < point.getY())) {
+				double x = startX + (point.getY() - startY) * (endX - startX) / (endY - startY);
+				if (x == point.getX()) {
+					return -1;
+				}
+
+				if (x > point.getX()) {
+					flag = !flag;
+				}
+			}
 		}
-		if( Math.abs(pt.getX()- getLast().getX()) <= SEL_TOLERANCE && Math.abs(pt.getY()-getLast().getY()) <= SEL_TOLERANCE ){
-			return pointList.size()-1;
-		} 
-		return -2;
+		return flag ? -1 : -2;
 	}
 
 	@Override

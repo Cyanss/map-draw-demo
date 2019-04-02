@@ -136,10 +136,7 @@ public class Polyline extends Graph {
 		for (int i = 0; i < pointList.size() - 1; i++) {
 			if( Math.abs(pt.getX()-pointList.get(i).getX()) <= SEL_TOLERANCE && Math.abs(pt.getY()-pointList.get(i).getY()) <= SEL_TOLERANCE ){
 				return i;
-			} else if ( pt.getX() >= (pointList.get(i).getX() > pointList.get(i+1).getX() ? pointList.get(i+1).getX() : pointList.get(i).getX()) &&
-				      pt.getX() <= (pointList.get(i).getX() < pointList.get(i+1).getX() ? pointList.get(i+1).getX() : pointList.get(i).getX()) &&
-					  pt.getY() >= (pointList.get(i).getY() > pointList.get(i+1).getY() ? pointList.get(i+1).getY() : pointList.get(i).getY()) &&
-				      pt.getY() <= (pointList.get(i).getY() < pointList.get(i+1).getY() ? pointList.get(i+1).getY() : pointList.get(i).getY()) ){
+			} else if (distancePointToLine(pt, pointList.get(i), pointList.get(i+1)) <= SEL_TOLERANCE){
 				return -1;
 			}				
 		}
@@ -147,6 +144,16 @@ public class Polyline extends Graph {
 			return pointList.size()-1;
 		} 
 		return -2;
+	}
+	
+	private double distancePointToLine(Point point, Point lineStart, Point lineEnd) {
+		double distance = Math.abs((lineStart.getY()-lineEnd.getY()) * point.getX() 
+	    		- (lineStart.getX()-lineEnd.getX()) * point.getY() 
+	    		+ lineEnd.getY() * lineStart.getX() - lineStart.getY() * lineEnd.getX()) 
+	    		/ Math.sqrt((lineStart.getX()-lineEnd.getX()) * (lineStart.getX()-lineEnd.getX()) 
+	    		+ (lineStart.getY()-lineEnd.getY()) *(lineStart.getY()-lineEnd.getY()));
+		return distance;
+	
 	}
 
 	@Override
